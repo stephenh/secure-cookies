@@ -1,0 +1,19 @@
+<ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
+	<info organisation="com.bizo" module="secure-cookies" revision="${revision}"/>
+	<configurations>
+		<conf name="default" extends="compile" />
+		<conf name="provided" visibility="private"/>
+		<conf name="compile" visibility="private"/>
+		<conf name="test" extends="default" visibility="private"/>
+		<conf name="sources"/>
+	</configurations>
+	<dependencies defaultconfmapping="%->default;sources->sources()">
+		<dependency org="commons-codec" name="commons-codec" rev="1.4" conf="compile,sources"/>
+		<dependency org="timeandmoney" name="timeandmoney" rev="0.5.1" conf="compile,sources"/>
+		<dependency org="net.iharder" name="base64" rev="2.3.8" conf="compile,sources"/>
+
+		<dependency org="javax.servlet" name="servlet-api" rev="2.4" conf="provided,sources"/>
+
+		<dependency org="junit" name="junit" rev="4.8.2" conf="test,sources"/>
+	</dependencies>
+</ivy-module>
