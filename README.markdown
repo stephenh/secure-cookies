@@ -11,4 +11,8 @@ Maven Repo
 
 [http://repo.joist.ws](http://repo.joist.ws)
 
+Credits
+-------
+
+Generously released as open source by [Bizo](http://www.bizo.com).
 
