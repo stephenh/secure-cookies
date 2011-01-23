@@ -6,3 +6,9 @@ IIRC:
     username|expiration|(data)k|HMAC(username|expiration|data|session key, k)
     where k=HMAC(user name|expiration time, sk) 
   
+Maven Repo
+----------
+
+[http://repo.joist.ws](http://repo.joist.ws)
+
+
