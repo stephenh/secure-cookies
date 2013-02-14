@@ -9,7 +9,7 @@
 	</configurations>
 	<dependencies defaultconfmapping="%->default;sources->sources()">
 		<dependency org="commons-codec" name="commons-codec" rev="1.4" conf="compile,sources"/>
-		<dependency org="timeandmoney" name="timeandmoney" rev="0.5.1" conf="compile,sources"/>
+		<dependency org="com.bizo" name="timeandmoney" rev="1.0.0" conf="compile,sources"/>
 		<dependency org="net.iharder" name="base64" rev="2.3.8" conf="compile,sources"/>
 
 		<dependency org="javax.servlet" name="servlet-api" rev="2.4" conf="provided,sources"/>
