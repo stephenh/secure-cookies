@@ -21,8 +21,8 @@ define 'secure-cookies' do
   ivy.compile_conf(['compile', 'provided']).test_conf('test')
   compile.using :source => '1.6', :target => '1.6'
 
+  file 'target/pom.xml' => task('ivy:makepom')
   package(:jar).pom.tap do |pom|
-    pom.enhance [task('ivy:makepom')]
     pom.from 'target/pom.xml'
   end
 end
