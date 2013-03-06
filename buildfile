@@ -3,7 +3,7 @@ THIS_VERSION = ENV['version'] || 'SNAPSHOT'
 
 require 'buildr/ivy_extension'
 repositories.remote << 'http://www.ibiblio.org/maven2'
-repositories.release_to = 'sftp://joist.ws/var/joist.repo'
+repositories.release_to = 'sftp://joist.ws/var/www/joist.repo'
 repositories.release_to[:permissions] = 0644
 
 # to resolve the ${version} in the ivy.xml
