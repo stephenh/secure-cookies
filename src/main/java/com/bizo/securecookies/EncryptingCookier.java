@@ -1,6 +1,7 @@
 package com.bizo.securecookies;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import javax.crypto.Cipher;
@@ -9,9 +10,9 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.iharder.Base64;
+
 import com.domainlanguage.time.TimeSource;
-import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
-import com.sun.org.apache.xml.internal.security.utils.Base64;
 
 /**
  * Given a {@link SecureCookier}, EncryptingCookier encrypts the payload and then delegates to SecureCookier for signing
@@ -28,16 +29,20 @@ public class EncryptingCookier {
 
   public EncryptingCookier(
     final String base64Encoded256BitAESKey,
-    final String hmacSecret,
+    final String base64EncodedHmacSecret,
     final Cookier delegate,
     final TimeSource clock,
     final long duration,
-    final TimeUnit durationUnit) throws Base64DecodingException {
-    this(base64Encoded256BitAESKey, new SecureCookier(delegate, clock, hmacSecret, duration, durationUnit));
+    final TimeUnit durationUnit) {
+    this(base64Encoded256BitAESKey, new SecureCookier(delegate, clock, base64EncodedHmacSecret, duration, durationUnit));
   }
 
-  public EncryptingCookier(final String base64Encoded256BitAESKey, final SecureCookier delegate) throws Base64DecodingException {
-    encryptionSecret = Base64.decode(base64Encoded256BitAESKey);
+  public EncryptingCookier(final String base64Encoded256BitAESKey, final SecureCookier delegate) {
+    try {
+      encryptionSecret = Base64.decode(base64Encoded256BitAESKey);
+    } catch (final IOException e) {
+      throw new RuntimeException(e);
+    }
     if (encryptionSecret.length != 32) {
       throw new IllegalArgumentException("base64Encoded256BitAESKey must contain a 256 bit key");
     }
@@ -67,7 +72,7 @@ public class EncryptingCookier {
    * public so tests can encrypt value 
    */
   public static String encryptToBase64(final String value, final byte[] secret) {
-    return Base64.encode(encrypt(value.getBytes(), secret));
+    return Base64.encodeBytes(encrypt(value.getBytes(), secret));
   }
 
   /**
@@ -76,8 +81,8 @@ public class EncryptingCookier {
   public static String decryptFromBase64(final String value, final byte[] secret) {
     try {
       return new String(decrypt(Base64.decode(value), secret));
-    } catch (final Base64DecodingException e) {
-      throw new RuntimeException();
+    } catch (final IOException e) {
+      throw new RuntimeException(e);
     }
   }
 
