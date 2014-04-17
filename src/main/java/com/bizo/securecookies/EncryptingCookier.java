@@ -1,6 +1,7 @@
 package com.bizo.securecookies;
 
 import java.io.ByteArrayOutputStream;
+import java.util.concurrent.TimeUnit;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -8,6 +9,7 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.domainlanguage.time.TimeSource;
 import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
 
@@ -23,6 +25,16 @@ public class EncryptingCookier {
 
   private final SecureCookier delegate;
   private final byte[] encryptionSecret;
+
+  public EncryptingCookier(
+    final String base64Encoded256BitAESKey,
+    final String hmacSecret,
+    final Cookier delegate,
+    final TimeSource clock,
+    final long duration,
+    final TimeUnit durationUnit) throws Base64DecodingException {
+    this(base64Encoded256BitAESKey, new SecureCookier(delegate, clock, hmacSecret, duration, durationUnit));
+  }
 
   public EncryptingCookier(final String base64Encoded256BitAESKey, final SecureCookier delegate) throws Base64DecodingException {
     encryptionSecret = Base64.decode(base64Encoded256BitAESKey);
