@@ -1,12 +1,18 @@
 package com.bizo.securecookies;
 
-import com.domainlanguage.time.*;
-import java.security.*;
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.TimeUnit;
-import javax.crypto.*;
-import javax.crypto.spec.*;
-import javax.servlet.http.*;
-import net.iharder.*;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import net.iharder.Base64;
+
+import com.domainlanguage.time.TimeSource;
 
 /**
  * Applies expiration and HMAC validation to cookies (e.g. for auth/SSO).
@@ -25,14 +31,23 @@ import net.iharder.*;
 public class SecureCookier {
 
   private final Cookier delegate;
-  private final String secret;
+  private final byte[] hmacSecret;
   private final TimeSource clock;
   private final long durationInMillis;
 
-  public SecureCookier(final Cookier delegate, final TimeSource clock, final String secret, final long duration, final TimeUnit durationUnit) {
+  public SecureCookier(
+    final Cookier delegate,
+    final TimeSource clock,
+    final String base64EncodedHmacSecret,
+    final long duration,
+    final TimeUnit durationUnit) {
     this.delegate = delegate;
     this.clock = clock;
-    this.secret = secret;
+    try {
+      hmacSecret = Base64.decode(base64EncodedHmacSecret);
+    } catch (final IOException e) {
+      throw new RuntimeException(e);
+    }
     durationInMillis = durationUnit.toMillis(duration);
   }
 
@@ -105,7 +120,7 @@ public class SecureCookier {
   }
 
   private String signToBase64(final String time, final String data) {
-    return signToBase64(secret, time, data);
+    return signToBase64(hmacSecret, time, data);
   }
 
   private boolean hasPast(final String time) {
@@ -118,9 +133,9 @@ public class SecureCookier {
   }
 
   /** Public so that tests can set cookies with the signed values. */
-  public static String signToBase64(final String secret, final String time, final String data) {
+  public static String signToBase64(final byte[] secret, final String time, final String data) {
     // We hash the user's expiration time with our secret
-    final byte[] k = hmac(time.getBytes(), secret.getBytes());
+    final byte[] k = hmac(time.getBytes(), secret);
     // and use that as the key to hash the real time+data payload.
     final byte[] value = hmac((time + data).getBytes(), k);
     // Supposedly using the per-user k is more secure than using the same secret for everyone.
@@ -130,8 +145,8 @@ public class SecureCookier {
   /** @return {@code data} HmacSHA1'd with {@code key} */
   private static byte[] hmac(final byte[] data, final byte[] key) {
     try {
-      final Mac mac = Mac.getInstance("HmacSHA1");
-      final SecretKeySpec secret = new SecretKeySpec(key, "HmacSHA1");
+      final Mac mac = Mac.getInstance("HmacSHA256");
+      final SecretKeySpec secret = new SecretKeySpec(key, "HmacSHA256");
       mac.init(secret);
       return mac.doFinal(data);
     } catch (final InvalidKeyException e) {
