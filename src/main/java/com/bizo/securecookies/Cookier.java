@@ -18,6 +18,7 @@ public class Cookier {
   private final String name;
   private final int maxAge;
   private final String domain;
+  private boolean secure;
 
   /** A cookie named {@code name} that is a session cookie. */
   public Cookier(final String name) {
@@ -48,6 +49,7 @@ public class Cookier {
     if (domain != null) {
       cookie.setDomain(domain);
     }
+    cookie.setSecure(secure);
     cookie.setPath("/");
     res.addCookie(cookie);
   }
@@ -59,6 +61,7 @@ public class Cookier {
     if (domain != null) {
       cookie.setDomain(domain);
     }
+    cookie.setSecure(secure);
     cookie.setPath("/");
     res.addCookie(cookie);
   }
@@ -70,6 +73,10 @@ public class Cookier {
       return null;
     }
     return c.getValue();
+  }
+
+  public void setSecure(boolean secure) {
+    this.secure = secure;
   }
 
   private Cookie getCookieOrNull(final HttpServletRequest req) {
