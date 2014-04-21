@@ -1,5 +1,5 @@
 <ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
-	<info organisation="com.bizo" module="secure-cookies" revision="${revision}"/>
+	<info organisation="com.bizo" module="secure-cookies" revision="${version}"/>
 	<configurations>
 		<conf name="default" extends="compile" />
 		<conf name="provided" visibility="private"/>
