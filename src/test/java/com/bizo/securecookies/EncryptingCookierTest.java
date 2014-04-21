@@ -6,15 +6,14 @@ import static org.junit.Assert.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
-import com.sun.org.apache.xml.internal.security.utils.Base64;
+import net.iharder.Base64;
 
 public class EncryptingCookierTest {
 
   private byte[] encryptionSecret;
 
   @Before
-  public void setUp() throws Base64DecodingException {
+  public void setUp() throws Exception {
     encryptionSecret = Base64.decode("YJIwQKY7/6DttK/7152MhOVdANIQsDIZCr0dvn/z/DQ=");
   }
 
