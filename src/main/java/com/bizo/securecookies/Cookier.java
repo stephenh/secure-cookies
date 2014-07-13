@@ -19,6 +19,7 @@ public class Cookier {
   private final int maxAge;
   private final String domain;
   private boolean secure;
+  private boolean httpOnly;
 
   /** A cookie named {@code name} that is a session cookie. */
   public Cookier(final String name) {
@@ -37,9 +38,15 @@ public class Cookier {
 
   /** A cookie named {@code name} that expires in {@code maxAge} (use -1 for session) for {@code domain}. */
   public Cookier(final String name, final long maxAge, final TimeUnit maxAgeUnit, final String domain) {
+    this(name, maxAge, maxAgeUnit, domain, false);
+  }
+
+  /** A cookie named {@code name} that expires in {@code maxAge} (use -1 for session) for {@code domain}. */
+  public Cookier(final String name, final long maxAge, final TimeUnit maxAgeUnit, final String domain, boolean httpOnly) {
     this.name = name;
     this.maxAge = (int) maxAgeUnit.toSeconds(maxAge);
     this.domain = domain;
+    this.httpOnly = httpOnly;
   }
 
   /** Sets {@code value} into {@code res} for the configured age/domain/path. */
@@ -51,6 +58,7 @@ public class Cookier {
     }
     cookie.setSecure(secure);
     cookie.setPath("/");
+    cookie.setHttpOnly(httpOnly);
     res.addCookie(cookie);
   }
 
