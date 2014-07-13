@@ -12,7 +12,7 @@
 		<dependency org="com.bizo" name="timeandmoney" rev="1.0.0" conf="compile,sources"/>
 		<dependency org="net.iharder" name="base64" rev="2.3.8" conf="compile,sources"/>
 
-		<dependency org="javax.servlet" name="servlet-api" rev="2.4" conf="provided,sources"/>
+		<dependency org="javax.servlet" name="javax.servlet-api" rev="3.0.1" conf="provided,sources"/>
 
 		<dependency org="junit" name="junit" rev="4.8.2" conf="test,sources"/>
 	</dependencies>
